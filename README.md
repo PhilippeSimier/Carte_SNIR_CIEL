@@ -1,5 +1,5 @@
 ﻿# Carte ESP32 SNIR  
-![le clavier](/21_carte_clavier_snir/carte_snir.jpg) 
+![le clavier](/carte_snir.jpg) 
 ## Description
 
 Cette carte polyvalente, basée sur un **ESP32,** intègre directement plusieurs périphériques, éliminant ainsi la nécessité de tout câblage. Elle est également équipée de connecteurs permettant d'ajouter des composants externes tels que I2C, RS232, ruban LED RGB et servo-moteur. La carte est dotée de deux relais permettant le contrôle d'actionneurs alimentés en tension continue ou alternative de 12V à 24V.
@@ -47,7 +47,7 @@ MicroPython bénéficie d'une communauté active qui partage des ressources, des
 
 MicroPython sur l'ESP32 offre une solution puissante et accessible pour les projets IoT et l'informatique embarquée, ouvrant la voie à une programmation Python sur des dispositifs embarqués.
 
-![EDI Thonny](/21_carte_clavier_snir/EDI_Thonny.png) 
+![EDI Thonny](/EDI_Thonny.png) 
 
 
 
