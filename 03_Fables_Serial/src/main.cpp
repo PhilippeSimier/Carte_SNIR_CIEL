@@ -28,13 +28,15 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <RTClib.h>
+#include <DateTimeManager.h>
 #include <esp32_snir.h>
 
 
 
 HardwareSerial com(1); // Déclaration d'une liaison série controlée part UART 1
-Afficheur *afficheur; // Un afficheur Oled
-RTC_DS3231 rtc; // Une horloge temps réel
+Afficheur *afficheur;  // Un afficheur Oled
+RTC_DS3231 rtc;        // Une horloge temps réel DS3231
+DateTimeManager dtm;   // Horloge RTC intégré à l'esp32
 bool rtcOk = false;
 Led *led;
 
@@ -61,6 +63,10 @@ void setup() {
             rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
         }
         rtcOk = true;
+        // Mise à l'heure de la rtc intégrée à l'esp32
+        DateTime now = rtc.now();
+        dtm.setCurrentTime(now.unixtime());
+        dtm.printCurrentTime(); 
     } else {
         Serial.println("Une erreur est apparue pendant le démarrage de l'horloge");
     }
@@ -173,6 +179,7 @@ void loop() {
                     do {
                         if (rtcOk) {
                             afficheur->afficherDateTime(rtc.now());
+                            dtm.printCurrentTime(); 
                         } else {
                             afficheur->afficher("No RTC");
                         }

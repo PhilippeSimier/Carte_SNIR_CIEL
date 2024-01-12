@@ -20,6 +20,10 @@
           <in>biblio.cpp</in>
           <in>biblio.h</in>
         </df>
+        <df name="DateTimeManager">
+          <in>DateTimeManager.cpp</in>
+          <in>DateTimeManager.h</in>
+        </df>
         <df name="esp32_snir">
           <in>esp32_snir.h</in>
         </df>
