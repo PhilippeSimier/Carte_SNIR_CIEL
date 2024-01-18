@@ -21,6 +21,7 @@ int DateTimeManager::setCurrentTime(unsigned long epoch) {
     int retour;
     struct timeval new_time;
     new_time.tv_sec = epoch;
+    new_time.tv_usec = 0;
     
     retour = settimeofday(&new_time, NULL); 
 
@@ -83,7 +84,7 @@ void DateTimeManager::printCurrentTime(Stream &flux) const {
             months[timeInfo.tm_mon],
             timeInfo.tm_year + 1900);
 
-    flux.println(&timeInfo, "%H:%M:%S");
+    flux.println(&timeInfo, "%H:%M:%S CET");
 
 }
 
