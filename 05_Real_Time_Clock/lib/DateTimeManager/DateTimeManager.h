@@ -10,14 +10,16 @@
 
 #include <Arduino.h>
 #include <RTClib.h>
+#include <WiFi.h>
 
 class DateTimeManager {
 
 public:
     
     enum MODE_SYNCHRO {
-        NTP = 0,
-        RTC_EXTERNE 
+        NTP,
+        RTC_EXTERNE,
+        AUTO,
     };
 
     DateTimeManager();

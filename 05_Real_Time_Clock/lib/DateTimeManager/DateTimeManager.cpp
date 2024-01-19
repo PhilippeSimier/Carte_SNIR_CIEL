@@ -30,28 +30,40 @@ bool DateTimeManager::synchro_RTC_Interne(MODE_SYNCHRO mode) {
 
     struct tm timeinfo;
     struct timeval new_time;
-    
+    extern WiFiClass WiFi;
+
     int retour = 0;
     
+    // Si le mode est AUTO avec un rtc externe présent
+    if (mode == AUTO && rtc_externe->begin()){
+        mode = RTC_EXTERNE;
+    }
+    // Si le mode AUTO avec une connexion internet est présente
+    if (mode == AUTO && WiFi.status() == WL_CONNECTED){
+        mode = NTP;
+    }
+
 
     switch (mode) {
-        case NTP:    // connexion aux serveurs NTP, avec un offset nul. Temps UTC
-            configTime(0, 0, 
-                    ntpServerName[0].c_str(), 
+        case NTP: // connexion aux serveurs NTP, avec un offset nul. Temps UTC
+            configTime(0, 0,
+                    ntpServerName[0].c_str(),
                     ntpServerName[1].c_str()
-                    ); 
+                    );
             while (!getLocalTime(&timeinfo)) {
                 Serial.println("!");
             }
-            
             break;
-        
+
         case RTC_EXTERNE:
-            new_time.tv_sec = rtc_externe->now().unixtime(); 
-            new_time.tv_usec = 0;
-            retour = settimeofday(&new_time, NULL);
+            if (rtc_externe->begin()) {
+                new_time.tv_sec = rtc_externe->now().unixtime();
+                new_time.tv_usec = 0;
+                retour = settimeofday(&new_time, NULL);
+            }else{
+                retour = 1;
+            }
             break;
-            
     }
 
     // Définir la timezone 
@@ -131,7 +143,8 @@ void DateTimeManager::printDateTime(const time_t _time, Stream &flux) const {
 }
 
 /**
- * 
+ * @brief  met à l'heure la rtc externe à partir de l'heure enregistrée
+ *         dans la rtc interne.     
  * @return true si réussi
  */
 bool DateTimeManager::set_RTC_Externe() {
