@@ -51,7 +51,7 @@ bool DateTimeManager::synchro_RTC_Interne(MODE_SYNCHRO mode) {
                     ntpServerName[1].c_str()
                     );
             while (!getLocalTime(&timeinfo)) {
-                Serial.println("!");
+                Serial.print("!");
             }
             break;
 

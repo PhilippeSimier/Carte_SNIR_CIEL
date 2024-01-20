@@ -31,24 +31,20 @@ void setup() {
     afficheur = new Afficheur;
 
     WiFi.begin(ssid, password);
-
-    while (WiFi.status() != WL_CONNECTED) {
+    int n = 0;
+    while (WiFi.status() != WL_CONNECTED && n < 20) {
         delay(500);
         Serial.print(".");
         afficheur->afficher('.');
+        n++;
     }
-    Serial.print("Connecté au réseau WiFi : ");
-    Serial.println(ssid);
 
-    if (dtm.synchro_RTC_Interne(DateTimeManager::RTC_EXTERNE)) {
+    if (dtm.synchro_RTC_Interne(DateTimeManager::NTP)) {
         Serial.println("La mise à jour de la date et de l'heure a réussi dans rtc interne");
-        
-        /**Mise à l'heure du RTC externe DS3231 à partir de la rtc interne
+
         if (dtm.set_RTC_Externe()) {
             Serial.println("La mise à jour de la date et de l'heure a réussi dans rtc externe");
         }
-        **/
-        
     }
 }
 

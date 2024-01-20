@@ -57,19 +57,9 @@ void setup() {
         return;
     }
     // Démarre l'horloge temps réel
-    if (rtc.begin()) {
-        if (rtc.lostPower()) {
-            Serial.println("RTC lost power, let's set the time!");
-            rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-        }
-        rtcOk = true;
-        // Mise à l'heure de la rtc intégrée à l'esp32
-        DateTime now = rtc.now();
-        dtm.setCurrentTime(now.unixtime());
-        dtm.printCurrentTime(); 
-    } else {
-        Serial.println("Une erreur est apparue pendant le démarrage de l'horloge");
-    }
+    if (dtm.synchro_RTC_Interne())
+        Serial.println("la mise à jour de la date et l'heure a réussi");
+    
     // Démarre la deuxième liaison série RS232 9600 bauds Rx -> GPIO16 Tx -> GPIO17
     com.begin(9600, SERIAL_8N1, RX_RS232, TX_RS232);
     Serial.println("Setup com série done");
@@ -114,6 +104,7 @@ void loop() {
 
     uint32_t c;
     float temperatureC;
+    time_t now;
 
     if (xTaskNotifyWait(0, ULONG_MAX, &c, 10) == pdPASS) { // attente une notification de la tâche clavier
         if (digitalRead(SW)) {
@@ -177,12 +168,10 @@ void loop() {
                 case '9':
 
                     do {
-                        if (rtcOk) {
-                            afficheur->afficherDateTime(rtc.now());
-                            dtm.printCurrentTime(); 
-                        } else {
-                            afficheur->afficher("No RTC");
-                        }
+                        time(&now);
+                        dtm.printDateTime(now, Serial);
+                        dtm.printDateTime(now, com);
+                        afficheur->afficherDateTime(now);
                         xTaskNotifyWait(0, ULONG_MAX, &c, 1000);
                     } while (c == NO_KEY);
 
