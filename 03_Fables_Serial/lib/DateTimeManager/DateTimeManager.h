@@ -27,6 +27,7 @@ public:
 
     int setCurrentTime(unsigned long epoch);
     unsigned long getCurrentTime() const;
+    void printCurrentTime(Stream &flux = Serial) const;
     void printDateTime(const time_t _time, Stream &flux = Serial) const;
     bool synchro_RTC_Interne(MODE_SYNCHRO mode = AUTO);
     bool set_RTC_Externe();

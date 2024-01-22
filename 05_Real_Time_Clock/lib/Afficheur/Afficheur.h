@@ -25,8 +25,7 @@ public:
     void afficherMdp(const String message);
     void afficherFloat(const String message, const float valeur, const String unite);
     void afficherDateTime(const time_t _time);
-    
-    
+    void afficherCurrentTime();
 private:
     String message;
 

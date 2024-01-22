@@ -11,6 +11,7 @@ DateTimeManager::DateTimeManager() {
 
     ntpServerName[0] = "ntp-p1.obspm.fr";
     ntpServerName[1] = "pool.ntp.org";
+    ntpServerName[2] = "time.google.com";
     timeZone = "CET-1CEST,M3.5.0,M10.5.0/3";
     rtc_externe = new RTC_DS3231();
 }
@@ -34,11 +35,13 @@ bool DateTimeManager::synchro_RTC_Interne(MODE_SYNCHRO mode) {
 
     int retour = 0;
     
-    // Si le mode est AUTO avec un rtc externe présent
+    // avec le mode AUTO 
+    // Choisir rtc externe si un circuit DS3231 est présent
     if (mode == AUTO && rtc_externe->begin()){
         mode = RTC_EXTERNE;
     }
-    // Si le mode AUTO avec une connexion internet est présente
+    // Avec le mode AUTO
+    // Choisir NTP si la connexion réseau WIFI est présente
     if (mode == AUTO && WiFi.status() == WL_CONNECTED){
         mode = NTP;
     }
@@ -48,7 +51,8 @@ bool DateTimeManager::synchro_RTC_Interne(MODE_SYNCHRO mode) {
         case NTP: // connexion aux serveurs NTP, avec un offset nul. Temps UTC
             configTime(0, 0,
                     ntpServerName[0].c_str(),
-                    ntpServerName[1].c_str()
+                    ntpServerName[1].c_str(),
+                    ntpServerName[2].c_str()
                     );
             while (!getLocalTime(&timeinfo)) {
                 Serial.print("!");
@@ -67,7 +71,7 @@ bool DateTimeManager::synchro_RTC_Interne(MODE_SYNCHRO mode) {
     }
 
     // Définir la timezone 
-    retour = setenv("TZ", timeZone.c_str(), 1);
+    setenv("TZ", timeZone.c_str(), 1);
 
     // Mettre à jour la variable d'environnement TZ
     tzset();
@@ -95,6 +99,7 @@ int DateTimeManager::setCurrentTime(unsigned long epoch) {
 
     return retour;
 }
+
 
 /**
  * @brief  Méthode pour obtenir le temps epoch courant de la rtc interne
@@ -140,6 +145,16 @@ void DateTimeManager::printDateTime(const time_t _time, Stream &flux) const {
     flux.print(&timeInfo, "%H:%M:%S");
     flux.println(" CET");
 
+}
+
+void DateTimeManager::printCurrentTime(Stream &flux) const {
+        
+    // time_t Type arithmétique le nombre de secondes depuis 00h00, le 1er janvier 1970 UTC
+    time_t now;
+
+    // renvoie l'heure actuelle du système sous forme de temps depuis l'époque
+    time(&now);
+    printDateTime(now, flux);
 }
 
 /**

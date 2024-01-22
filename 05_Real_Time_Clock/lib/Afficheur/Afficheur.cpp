@@ -96,12 +96,12 @@ void Afficheur::afficherFloat(const String message, const float valeur, const St
 }
 
 /**
- * Méthode pour afficher la date et l'heure
- * @param struct tm
+ * Méthode pour afficher une date et l'heure
+ * @param dateTime
  */
 void Afficheur::afficherDateTime(const time_t _time){
     
-    struct tm dateTime;
+struct tm dateTime;
     char message[26];
     
     localtime_r(&_time, &dateTime);
@@ -121,5 +121,14 @@ void Afficheur::afficherDateTime(const time_t _time){
     
 }
 
-
+/**
+ * @brief  Méthode pour afficher l'heure courante 
+ *         Celle contenue dans le rtc interne de l'ESP32.
+ */
+void Afficheur::afficherCurrentTime(){
+    
+    time_t now;
+    time(&now);
+    afficherDateTime(now);
+}
 

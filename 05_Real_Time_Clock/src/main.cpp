@@ -50,17 +50,10 @@ void setup() {
 
 void loop() {
 
-    // time_t Type arithmétique le nombre de secondes depuis 00h00, le 1er janvier 1970 UTC
-    time_t now;
-
-    // renvoie l'heure actuelle du système sous forme de temps depuis l'époque
-    time(&now);
-
-    dtm.printDateTime(now);
-    afficheur->afficherDateTime(now);
+    dtm.printCurrentTime();
+    afficheur->afficherCurrentTime();
 
 
     delay(1000);
-    // dtm.synchro_RTC_Interne(DateTimeManager::RTC_EXTERNE);
 }
 

@@ -104,8 +104,7 @@ void loop() {
 
     uint32_t c;
     float temperatureC;
-    time_t now;
-
+    
     if (xTaskNotifyWait(0, ULONG_MAX, &c, 10) == pdPASS) { // attente une notification de la tâche clavier
         if (digitalRead(SW)) {
             switch (c) {
@@ -165,13 +164,12 @@ void loop() {
                     envoyerFichier("/Beaute.txt", com);
                     com.write(0x04);
                     break;
+                
                 case '9':
-
                     do {
-                        time(&now);
-                        dtm.printDateTime(now, Serial);
-                        dtm.printDateTime(now, com);
-                        afficheur->afficherDateTime(now);
+                        dtm.printCurrentTime(Serial);
+                        dtm.printCurrentTime(com);
+                        afficheur->afficherCurrentTime();
                         xTaskNotifyWait(0, ULONG_MAX, &c, 1000);
                     } while (c == NO_KEY);
 

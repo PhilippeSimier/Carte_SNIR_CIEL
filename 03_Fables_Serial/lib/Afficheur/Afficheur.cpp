@@ -121,3 +121,14 @@ struct tm dateTime;
     
 }
 
+/**
+ * @brief  Méthode pour afficher l'heure courante 
+ *         Celle contenue dans le rtc interne de l'ESP32.
+ */
+void Afficheur::afficherCurrentTime(){
+    
+    time_t now;
+    time(&now);
+    afficherDateTime(now);
+}
+

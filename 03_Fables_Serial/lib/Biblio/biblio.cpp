@@ -49,10 +49,10 @@ void tacheBlink(void * parameter) {
 
     // loop
     while (1) {
-        digitalWrite(LED, digitalRead(LED) ^1); // turn the LED 
-        delay(200); // wait for a second
-        digitalWrite(LED, digitalRead(LED) ^1); // turn the LED 
-        delay(1000);
+        digitalWrite(LED, HIGH); // turn the LED 
+        delay(50); // wait for a 0.1 second
+        digitalWrite(LED, LOW); // turn the LED 
+        delay(1950);
     }
     vTaskDelete(NULL);
 }
