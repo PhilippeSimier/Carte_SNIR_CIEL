@@ -13,14 +13,20 @@
 // Sur la carte PCT  adresse 0x3c connecté sur SDA et SCL
 
 Afficheur::Afficheur() :
-SSD1306Wire(0x3c, SDA, SCL, GEOMETRY_128_64) {
-    init();
-    setFont(ArialMT_Plain_24);
-    flipScreenVertically();
+SSD1306Wire(0x3c, SDA, SCL, GEOMETRY_128_64) 
+{
+    
     message = "";
 }
 
 Afficheur::~Afficheur() {
+}
+
+void Afficheur::init(void){
+    
+    SSD1306Wire::init();
+    setFont(ArialMT_Plain_24);
+    flipScreenVertically();   
 }
 
 /**

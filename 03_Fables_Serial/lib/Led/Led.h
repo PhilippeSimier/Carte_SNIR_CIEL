@@ -31,6 +31,7 @@ public:
     Led(word _numPixels = DATALEDS );
     virtual ~Led();
     
+    void init(const int nb = 100);
     void allumer(const RgbColor &couleur, word id = 0);
     void eteindre(const word id = 0);
     void cheniller(const RgbColor &couleur, word nb = 4);

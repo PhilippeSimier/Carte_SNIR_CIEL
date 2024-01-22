@@ -13,11 +13,15 @@ Led::Led(word _numPixels) :
 NeoPixelBus<NeoRgbFeature, Neo800KbpsMethod>(_numPixels, DATALEDS),
 numPixels(_numPixels),
 nb_ms(100) {
-    Begin();
-    Show(); // cela réinitialise tous les leds couleurs à un état désactivé
 }
 
 Led::~Led() {
+}
+
+void Led::init(const int nb){
+    Begin();
+    Show(); // cela réinitialise tous les leds couleurs à un état désactivé
+    nb_ms = nb;
 }
 
 /**

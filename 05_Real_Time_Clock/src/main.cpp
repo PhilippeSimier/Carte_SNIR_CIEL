@@ -15,11 +15,11 @@
 #include <WiFi.h>
 #include <DateTimeManager.h>
 #include <Afficheur.h>
-#include <RTClib.h>
+
 
 
 DateTimeManager dtm;
-Afficheur *afficheur; // Un afficheur Oled
+Afficheur afficheur; // Un afficheur Oled
 
 
 const char *ssid = "PA_philippe";
@@ -28,14 +28,14 @@ const char *password = "ygyc3556";
 void setup() {
 
     Serial.begin(115200);
-    afficheur = new Afficheur;
+    afficheur.init();
 
     WiFi.begin(ssid, password);
     int n = 0;
     while (WiFi.status() != WL_CONNECTED && n < 20) {
         delay(500);
         Serial.print(".");
-        afficheur->afficher('.');
+        afficheur.afficher('.');
         n++;
     }
 
@@ -51,9 +51,7 @@ void setup() {
 void loop() {
 
     dtm.printCurrentTime();
-    afficheur->afficherCurrentTime();
-
-
+    afficheur.afficherCurrentTime();
     delay(1000);
 }
 

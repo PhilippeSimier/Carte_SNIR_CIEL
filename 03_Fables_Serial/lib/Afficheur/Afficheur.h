@@ -19,7 +19,7 @@ public:
     
     Afficheur();
     virtual ~Afficheur();
-    
+    void init(void);
     void afficher(const String message);
     void afficher(const char car);
     void afficherMdp(const String message);

@@ -34,11 +34,11 @@
 
 
 HardwareSerial com(1); // Déclaration d'une liaison série controlée part UART 1
-Afficheur *afficheur;  // Un afficheur Oled
+Afficheur  afficheur;  // Un afficheur Oled
 RTC_DS3231 rtc;        // Une horloge temps réel DS3231
 DateTimeManager dtm;   // Horloge RTC intégré à l'esp32
-bool rtcOk = false;
-Led *led;
+
+Led led(NB_PIXELS);    // Un ruban de led RGB 
 
 
 OneWire oneWire(TEMP);
@@ -66,18 +66,18 @@ void setup() {
 
     // Configure Le SW en entrée
     pinMode(SW, INPUT);
-    // Création d'un afficheur Oled
-    afficheur = new Afficheur;
+    // initialisation de l'afficheur OLED
+    afficheur.init();
 
 
     if (digitalRead(SW))
-        afficheur->afficher("Liaision Série");
+        afficheur.afficher("Liaision Série");
     else
-        afficheur->afficher("Clavier Série");
+        afficheur.afficher("Clavier Série");
 
-    // Création de 4 leds couleurs RVB
-    led = new Led(NB_PIXELS); // quatre leds RGB;
-    led->setDelay(DELAY);
+    // initialisation du ruban de couleurs RVB
+    led.init(DELAY);
+    
 
     // Démarre le temperature sensor
     sensors.begin();
@@ -109,56 +109,56 @@ void loop() {
         if (digitalRead(SW)) {
             switch (c) {
                 case '1':
-                    afficheur->afficher("Maître Corbeau");
+                    afficheur.afficher("Maître Corbeau");
                     envoyerFichier("/fableCorbeau.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/fableCorbeau.txt", com);
                     com.write(0x04);
                     break;
                 case '2':
-                    afficheur->afficher("Cigale & Fourmie");
+                    afficheur.afficher("Cigale & Fourmie");
                     envoyerFichier("/fableCigale.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/fableCigale.txt", com);
                     com.write(0x04);
                     break;
                 case '3':
-                    afficheur->afficher("la Grenouille");
+                    afficheur.afficher("la Grenouille");
                     envoyerFichier("/fableGrenouille.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/fableGrenouille.txt", com);
                     com.write(0x04);
                     break;
                 case '4':
-                    afficheur->afficher("la Tortue");
+                    afficheur.afficher("la Tortue");
                     envoyerFichier("/fableTortue.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/fableTortue.txt", com);
                     com.write(0x04);
                     break;
                 case '5':
-                    afficheur->afficher("le loup");
+                    afficheur.afficher("le loup");
                     envoyerFichier("/fableLeLoup.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/fableLeLoup.txt", com);
                     com.write(0x04);
                     break;
                 case '6':
-                    afficheur->afficher("C'est du chinois");
+                    afficheur.afficher("C'est du chinois");
                     envoyerFichier("/chinois.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/chinois.txt", com);
                     com.write(0x04);
                     break;
                 case '7':
-                    afficheur->afficher("Chinois traduit");
+                    afficheur.afficher("Chinois traduit");
                     envoyerFichier("/chinois_traduit.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/chinois_traduit.txt", com);
                     com.write(0x04);
                     break;
                 case '8':
-                    afficheur->afficher("Beauté");
+                    afficheur.afficher("Beauté");
                     envoyerFichier("/Beaute.txt", Serial);
                     Serial.write(0x04);
                     envoyerFichier("/Beaute.txt", com);
@@ -169,14 +169,14 @@ void loop() {
                     do {
                         dtm.printCurrentTime(Serial);
                         dtm.printCurrentTime(com);
-                        afficheur->afficherCurrentTime();
+                        afficheur.afficherCurrentTime();
                         xTaskNotifyWait(0, ULONG_MAX, &c, 1000);
                     } while (c == NO_KEY);
 
                     break;
 
                 case '*':
-                    afficheur->afficher("trames NMEA");
+                    afficheur.afficher("trames NMEA");
                     do {
                         envoyerFichier("/leMans.nmea", Serial);
                         envoyerFichier("/leMans.nmea", com);
@@ -196,13 +196,13 @@ void loop() {
                         com.print(temperatureC);
                         com.print(" °C : ");
 
-                        afficheur->afficherFloat("Temp ", temperatureC, " °C");
+                        afficheur.afficherFloat("Temp ", temperatureC, " °C");
                         delay(1000);
                         // Lecture de l'entrée analogique GPIO 36 => ADC1_CHANNEL_0
                         int value = adc1_get_raw(ADC1_CHANNEL_0);
                         // Mise à l'échelle
                         int y = map(value, 0, 4095, 0, 100);
-                        afficheur->afficherFloat("Lum   ", y, " %");
+                        afficheur.afficherFloat("Lum   ", y, " %");
                         Serial.print(y);
                         Serial.print(" %\n");
                         com.print(y);
@@ -216,7 +216,7 @@ void loop() {
                     break;
 
                 case '\n':
-                    afficheur->afficher("Test Leds");
+                    afficheur.afficher("Test Leds");
                     do {
                         chenillard(NB_PIXELS + 1);
                         xTaskNotifyWait(0, ULONG_MAX, &c, 10);
@@ -227,11 +227,11 @@ void loop() {
                     Serial.println("Commande inconnue\n");
                     Serial.write(0x04);
             }
-            afficheur->afficher("Entrer code");
+            afficheur.afficher("Entrer code");
         } else {
             com.write(c);
             Serial.write(c);
-            afficheur->afficher(c);
+            afficheur.afficher(c);
         }
     }
 

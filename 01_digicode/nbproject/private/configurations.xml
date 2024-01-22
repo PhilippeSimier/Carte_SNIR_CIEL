@@ -8,6 +8,10 @@
         <df name="Afficheur">
           <in>Afficheur.cpp</in>
           <in>Afficheur.h</in>
+          <in>Dialog_plain_19.h</in>
+        </df>
+        <df name="esp32_snir">
+          <in>esp32_snir.h</in>
         </df>
         <df name="Led">
           <in>Led.cpp</in>

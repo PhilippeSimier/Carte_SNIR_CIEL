@@ -10,17 +10,24 @@
 
 
 // Constructeur de Afficheur
-// Sur la carte PCT  adresse 0x3c connecté sur SDA et SCL
+// Sur la carte Snir CIEL  adresse 0x3c connecté sur SDA et SCL
 
 Afficheur::Afficheur() :
-SSD1306Wire(0x3c, SDA, SCL, GEOMETRY_128_64) {
-    init();
-    setFont(ArialMT_Plain_24);
-    flipScreenVertically();
+SSD1306Wire(0x3c, SDA, SCL, GEOMETRY_128_64) {  
     message = "";
 }
 
 Afficheur::~Afficheur() {
+}
+
+/**
+ * Méthode pour initialiser l'affichage
+ */
+void Afficheur::init(void){
+    
+    SSD1306Wire::init();
+    setFont(ArialMT_Plain_24);
+    flipScreenVertically();   
 }
 
 /**
@@ -35,7 +42,7 @@ void Afficheur::afficher(const String message) {
 }
 
 /**
- * Méthode pour afficher les 10 derniers caractères reçus
+ * Méthode pour afficher les derniers caractères reçus
  * @param car le caractère suivant à placer sur l'afficheur
  * indexOf() pour trouver un caractère dans le String
  */
@@ -54,7 +61,7 @@ void Afficheur::afficher(const char car) {
             message += String(car);
     }
     
-    if (getStringWidth(message) > 127){
+    while (getStringWidth(message) > 127){
         message = message.substring(1);
     }
     clear();

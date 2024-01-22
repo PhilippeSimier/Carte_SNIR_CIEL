@@ -163,21 +163,21 @@ static void taskClavier(void *pvParameters) {
  */
 void chenillard(const word nb) {
 
-    extern Led* led;
-    extern Afficheur* afficheur;
+    extern Led led;
+    extern Afficheur afficheur;
     word i{0};
 
-    afficheur->afficher("couleur verte");
-    led->cheniller(VERT, nb);
-    led->chenillerInverse(NOIR, nb);
+    afficheur.afficher("couleur verte");
+    led.cheniller(VERT, nb);
+    led.chenillerInverse(NOIR, nb);
 
-    afficheur->afficher("couleur Bleue");
-    led->cheniller(BLEU, nb);
-    led->chenillerInverse(NOIR, nb);
+    afficheur.afficher("couleur Bleue");
+    led.cheniller(BLEU, nb);
+    led.chenillerInverse(NOIR, nb);
 
-    afficheur->afficher("couleur rouge");
-    led->cheniller(ROUGE, nb);
-    led->chenillerInverse(NOIR, nb);
+    afficheur.afficher("couleur rouge");
+    led.cheniller(ROUGE, nb);
+    led.chenillerInverse(NOIR, nb);
     delay(200);
 }
 

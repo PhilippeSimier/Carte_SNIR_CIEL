@@ -12,8 +12,7 @@
 #include <Keypad.h>
 #include <Afficheur.h>          // Afficheur SSD1306
 #include <Led.h>                // Les quatre Leds RGB
-
-#define CONNECTEUR_BAS   // Définit la position du connecteur clavier en haut ou bas
+#include <esp32_snir.h>
 
 // Déclaration des caractères sur les touches
 char keys[4][3] = {
@@ -41,8 +40,8 @@ Keypad clavier = Keypad((char *) keys, rowPins, colPins, 4, 3);
 
 String code;
 String secret = "1234\n";
-Afficheur *afficheur;
-Led *led;
+Afficheur  afficheur;
+Led led(4);  // 4 leds RGB
 
 HardwareSerial com(1); // Déclaration d'une liaison série controlée part UART 1
 
@@ -55,14 +54,15 @@ void setup() {
     com.begin(9600, SERIAL_8N1, 16, 17); // Rx -> GPIO16 Tx -> GPIO17
     com.println("Setup com done");
 
-    afficheur = new Afficheur;
-    led = new Led(4); // quatre leds
-
+    afficheur.init();
+    led.init(); // initialisation des LED RGB
+    pinMode(RELAY_1, OUTPUT);  // Une sortie Relais 1
+    
     // Création des tâches blink et BP
     xTaskCreate(blinkLedBleu, "blinkLedBleu", 10000, NULL, 1, NULL);
     xTaskCreate(boutonPoussoir, "boutonpoussoir", 10000, NULL, 1, NULL);
 
-    afficheur->afficher("Digicode");
+    afficheur.afficher("Digicode");
 
 }
 
@@ -72,32 +72,35 @@ void loop() {
     if (key) {
 
         code.concat(key);
-        afficheur->afficherMdp(code);
+        afficheur.afficherMdp(code);
         com.print(key);
 
         if (key == '\n') {
             if (!code.compareTo(secret)) {
-                afficheur->afficher("La porte s'ouvre");
+                afficheur.afficher("La porte s'ouvre");
                 com.println("La porte s'ouvre");
+                Serial.println("La porte s'ouvre");
                 code = "";
-                led->allumer(VERT); // led 0 verte
+                led.allumer(VERT); // led 0 verte
+                digitalWrite(RELAY_1, HIGH);
                 delay(3000);
-                led->eteindre();
-                afficheur->afficher("Entrez le code");
+                led.eteindre();
+                digitalWrite(RELAY_1, LOW);
+                afficheur.afficher("Entrez le code");
 
             } else {
-                afficheur->afficher("Code faux!");
+                afficheur.afficher("Code faux!");
                 com.println("Code faux " + code);
                 code = "";
-                led->allumer(ROUGE); // led 0 rouge
+                led.allumer(ROUGE); // led 0 rouge
                 delay(2000);
-                led->eteindre();
-                afficheur->afficher("Entrez le code");
+                led.eteindre();
+                afficheur.afficher("Entrez le code");
             }
         }
         if (key == '*') {
             code = "";
-            afficheur->afficher("Entrez le code");
+            afficheur.afficher("Entrez le code");
         }
 
     }
@@ -109,14 +112,14 @@ void loop() {
 
 void blinkLedBleu(void * parameter) {
     
-    const int LED {2};
+    
     pinMode(LED, OUTPUT);
 
     // loop
     while (1) {
-        digitalWrite(LED, digitalRead(LED) ^1); // turn the LED 
-        delay(200); // wait for a second
-        digitalWrite(LED, digitalRead(LED) ^1); // turn the LED 
+        digitalWrite(LED, HIGH); // turn the LED 
+        delay(50); // wait for a second
+        digitalWrite(LED, LOW); // turn the LED 
         delay(1000);
     }
     vTaskDelete(NULL);
@@ -146,9 +149,12 @@ void boutonPoussoir(void * parameter) {
         // traitement postérieur Ecriture des sorties
         if (porte) {
             com.println("La porte s'ouvre");
-            led->allumer(VERT); // led 0 verte
+            Serial.println("La porte s'ouvre");
+            led.allumer(VERT); // led 0 verte
+            digitalWrite(RELAY_1, HIGH);
             delay(3000);
-            led->eteindre();
+            led.eteindre();
+            digitalWrite(RELAY_1, LOW);
             com.println("La porte se referme");
 
         }
