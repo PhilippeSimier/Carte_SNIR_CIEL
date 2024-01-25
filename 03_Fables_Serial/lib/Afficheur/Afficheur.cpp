@@ -139,3 +139,5 @@ void Afficheur::afficherCurrentTime(){
     afficherDateTime(now);
 }
 
+Afficheur afficheur;
+

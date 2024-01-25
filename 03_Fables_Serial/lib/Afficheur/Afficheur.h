@@ -31,5 +31,7 @@ private:
 
 };
 
+extern Afficheur afficheur;
+
 #endif /* AFFICHEUR_H */
 

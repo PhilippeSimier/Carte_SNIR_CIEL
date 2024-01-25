@@ -34,7 +34,6 @@
 
 
 HardwareSerial com(1); // Déclaration d'une liaison série controlée part UART 1
-Afficheur  afficheur;  // Un afficheur Oled
 RTC_DS3231 rtc;        // Une horloge temps réel DS3231
 DateTimeManager dtm;   // Horloge RTC intégré à l'esp32
 

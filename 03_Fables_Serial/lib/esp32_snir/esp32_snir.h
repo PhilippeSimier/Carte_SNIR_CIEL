@@ -8,7 +8,7 @@
 #ifndef ESP32_SNIR_H
 #define ESP32_SNIR_H
 
-#define CONNECTEUR_BAS   // Définit la position du connecteur clavier en haut ou bas
+#define CONNECTEUR_HAUT   // Définit la position du connecteur clavier en haut ou bas
 
 #define DELAY 200           // Temps d'attente en ms pour cheniller
 

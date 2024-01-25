@@ -76,9 +76,7 @@ void createTaskBridge(void){
 void tacheBridge(void * parameter) {
 
 
-    extern HardwareSerial com;
-    extern Afficheur* afficheur;
-    
+    extern HardwareSerial com;   
     char car;
 
 
@@ -87,7 +85,7 @@ void tacheBridge(void * parameter) {
         while (Serial.available() > 0) {
             car = Serial.read();            
             com.write(car);
-            afficheur->afficher(car);
+            afficheur.afficher(car);
         }
 
         while (com.available() > 0) {
